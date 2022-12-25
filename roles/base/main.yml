@@ -1,0 +1,22 @@
+- name: update and upgrade system packages
+  apt:
+    upgrade: dist
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: install development packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - vim
+    - git
+    - python3-pip
+    - git
+
+- name: install python packages
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - ansible

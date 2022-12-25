@@ -1,4 +1,3 @@
----
 - name: docker install
   block:
     - name: install docker
@@ -10,9 +9,6 @@
         - curl
         - gnupg
         - lsb-release
-        - vim
-        - git
-        - python3-pip
     
     - name: create keyrings directory
       file:

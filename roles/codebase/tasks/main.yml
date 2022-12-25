@@ -1,0 +1,21 @@
+- name: move ssh key to ssh folder
+  copy:
+    src: keyfile
+    dest: /home/{{ ansible_user }}/.ssh/pi
+    mode: 0600
+
+- name: move ssh key to ssh folder
+  copy:
+    src: pubkey
+    dest: /home/{{ ansible_user }}/.ssh/pi.pub
+    mode: 0644
+
+- name: get deployment file from github account
+  git:
+    repo: https://github.com/rection/PersonalServer
+    dest: /home/{{ ansible_user }}/PersonalServer
+    version: main
+    force: yes
+    update: yes
+    accept_hostkey: yes
+    key_file: /home/{{ ansible_user }}/.ssh/pi

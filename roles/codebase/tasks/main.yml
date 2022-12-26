@@ -10,11 +10,17 @@
     dest: /home/{{ ansible_user }}/.ssh/pi.pub
     mode: 0644
 
+- name: add ssh config file with config
+  copy:
+    src: config
+    dest: /home/{{ ansible_user }}/.ssh/config
+    mode: 0644
+
 - name: get deployment file from github account
   block:
   - name: clone repo
     git:
-      repo: https://github.com/rection/PersonalServer
+      repo: git@github.com:rection/PersonalServer.git
       dest: /home/{{ ansible_user }}/PersonalServer
       version: main
       force: yes

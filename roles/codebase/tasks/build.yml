@@ -17,24 +17,6 @@
     - traefik
   when: ansible_hostname == "master"
 
-# - name: initialize traefik
-#   community.docker.docker_container:
-#     name: traefik
-#     image: traefik:latest
-#     state: started
-#     restart_policy: unless-stopped
-#     volumes:
-#       - /var/run/docker.sock:/var/run/docker.sock
-#       - /home/{{ ansible_user }}/PersonalServer/traefik/traefik.yml:/etc/traefik/traefik.yml
-#     ports:
-#       - "80:80"
-#       - "443:443"
-#     networks:
-#       - name: traefik
-#         aliases:
-#           - traefik
-#   when: ansible_hostname == "master"
-
 - name: build docker compose file
   community.docker.docker_compose:
     project_src: "/home/{{ ansible_user }}/PersonalServer/{{ item }}"

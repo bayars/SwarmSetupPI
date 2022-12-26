@@ -19,3 +19,7 @@
     update: yes
     accept_hostkey: yes
     key_file: /home/{{ ansible_user }}/.ssh/pi
+
+- name: run docker-compose
+  include_role:
+    name: build

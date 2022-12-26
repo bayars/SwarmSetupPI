@@ -16,6 +16,7 @@
 - name: install python packages
   pip:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - ansible
+    - pip

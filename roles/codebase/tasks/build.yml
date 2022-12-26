@@ -1,0 +1,53 @@
+- name: initialize docker with wifi
+  community.docker.docker_swarm:
+    state: present
+    advertise_addr: "{{swarm_network_interface}}"
+  when: ansible_hostname == "master"
+
+- name: create docker network
+  community.docker.docker_network:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - nextcloud
+    - plex
+    - redmine
+    - wireguard
+    - traefik
+  when: ansible_hostname == "master"
+
+# - name: initialize traefik
+#   community.docker.docker_container:
+#     name: traefik
+#     image: traefik:latest
+#     state: started
+#     restart_policy: unless-stopped
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
+#       - /home/{{ ansible_user }}/PersonalServer/traefik/traefik.yml:/etc/traefik/traefik.yml
+#     ports:
+#       - "80:80"
+#       - "443:443"
+#     networks:
+#       - name: traefik
+#         aliases:
+#           - traefik
+#   when: ansible_hostname == "master"
+
+- name: build docker compose file
+  community.docker.docker_compose:
+    project_src: "/home/{{ ansible_user }}/PersonalServer/{{ item }}"
+    build: yes
+    state: present
+    files:
+      - docker-compose.yml
+  with_items: 
+    - nextcloud
+    - plex
+    - redmine
+    - wireguard
+  when: ansible_hostname == "master"
+
+
+
+

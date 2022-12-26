@@ -18,5 +18,5 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - ansible
     - pip
+    - ansible

@@ -1,6 +1,7 @@
 ---
-hosts: all
-roles:
-  - base
-  - docker
-  - codebase
+- hosts: all
+  become: yes
+  roles:
+    - base
+    - docker
+    - codebase

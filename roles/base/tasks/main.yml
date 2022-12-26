@@ -12,7 +12,6 @@
     - vim
     - git
     - python3-pip
-    - git
 
 - name: install python packages
   pip:

@@ -3,7 +3,7 @@
     src: keyfile.key
     dest: /home/{{ ansible_user }}/.ssh/pi
     mode: 0600
-
+  
 - name: move ssh key to ssh folder
   copy:
     src: pubkey.key
@@ -11,15 +11,18 @@
     mode: 0644
 
 - name: get deployment file from github account
-  git:
-    repo: https://github.com/rection/PersonalServer
-    dest: /home/{{ ansible_user }}/PersonalServer
-    version: main
-    force: yes
-    update: yes
-    accept_hostkey: yes
-    key_file: /home/{{ ansible_user }}/.ssh/pi
+  block:
+  - name: clone repo
+    git:
+      repo: https://github.com/rection/PersonalServer
+      dest: /home/{{ ansible_user }}/PersonalServer
+      version: main
+      force: yes
+      update: yes
+      accept_hostkey: yes
+      key_file: /home/{{ ansible_user }}/.ssh/pi
 
-- name: run docker-compose
-  include_role:
-    name: build
+  - name: run docker-compose
+    include_role:
+      name: build
+  when: ansible_hostname == "master"

@@ -11,6 +11,7 @@
   with_items:
     - vim
     - git
+    - ansible
     - python3-pip
 
 - name: install python packages
@@ -19,4 +20,3 @@
     state: latest
   with_items:
     - pip
-    - ansible

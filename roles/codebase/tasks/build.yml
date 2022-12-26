@@ -1,4 +1,5 @@
-- name: initialize docker with wifi
+---
+- name: initialize docker with wifi interface
   community.docker.docker_swarm:
     state: present
     advertise_addr: "{{swarm_network_interface}}"

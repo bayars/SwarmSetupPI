@@ -1,12 +1,12 @@
 - name: move ssh key to ssh folder
   copy:
-    src: keyfile
+    src: keyfile.key
     dest: /home/{{ ansible_user }}/.ssh/pi
     mode: 0600
 
 - name: move ssh key to ssh folder
   copy:
-    src: pubkey
+    src: pubkey.key
     dest: /home/{{ ansible_user }}/.ssh/pi.pub
     mode: 0644
 

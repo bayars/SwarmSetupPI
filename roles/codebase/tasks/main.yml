@@ -1,14 +1,13 @@
 - name: move ssh key to ssh folder
   copy:
-    src: keyfile.key
-    dest: /home/{{ ansible_user }}/.ssh/pi
-    mode: 0600
-  
-- name: move ssh key to ssh folder
-  copy:
-    src: pubkey.key
-    dest: /home/{{ ansible_user }}/.ssh/pi.pub
-    mode: 0644
+    src: "{{ item.key }}"
+    dest: "/home/{{ ansible_user }}/.ssh/{{ item.destination }}"
+    owner: "pi"
+    group: "pi"
+    mode: "{{ item.mode }}"
+  with_items: 
+    - { key: "keyfile.key", destination: "pi", mode: "0600" }
+    - { key: "pubkey.key", destination: "pi.pub",mode: "0644" }
 
 - name: add ssh config file with config
   copy:
@@ -29,6 +28,5 @@
       key_file: /home/{{ ansible_user }}/.ssh/pi
 
   - name: run docker-compose
-    include_role:
-      name: build
+    include_tasks: build.yml
   when: ansible_hostname == "master"

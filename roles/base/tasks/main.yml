@@ -13,6 +13,7 @@
     - git
     - ansible
     - python3-pip
+    - docker
 
 - name: install python packages
   pip:

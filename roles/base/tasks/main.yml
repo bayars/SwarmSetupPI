@@ -13,11 +13,11 @@
     - git
     - ansible
     - python3-pip
-    - docker
 
 - name: install python packages
+  become_user: pi
   pip:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - pip

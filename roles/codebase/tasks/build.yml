@@ -1,11 +1,13 @@
 ---
 - name: initialize docker with wifi interface
+  become_user: pi
   community.docker.docker_swarm:
     state: present
     advertise_addr: "{{swarm_network_interface}}"
   when: ansible_hostname == "master"
 
 - name: create docker network
+  become_user: pi
   community.docker.docker_network:
     name: "{{ item }}"
     state: present
@@ -17,19 +19,28 @@
     - traefik
   when: ansible_hostname == "master"
 
-- name: build docker compose file
-  community.docker.docker_compose:
-    project_src: "/home/{{ ansible_user }}/PersonalServer/{{ item }}"
-    build: yes
-    state: present
-    files:
-      - docker-compose.yml
+- name: run composes
+  shell: |
+    docker compose -f /home/{{ ansible_user }}/PersonalServer/{{ item }}/docker-compose.yml up -d
   with_items: 
     - nextcloud
     - plex
     - redmine
     - wireguard
   when: ansible_hostname == "master"
+
+
+# - name: build docker compose file
+#   become_user: pi
+#   community.docker.docker_compose:
+#     project_src: "/home/{{ ansible_user }}/PersonalServer/{{ item }}"
+#     build: yes
+#     state: present
+#     files:
+#       - docker-compose.yml
+#   vars:
+#     ansible_python_interpreter: /usr/bin/python3
+
 
 
 

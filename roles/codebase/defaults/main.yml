@@ -1,1 +1,4 @@
-swarm_network_interface: "wlan0"
+swarm_network_interface: "eth1"
+SAMBA_USER: "Safa"
+SAMBA_PASSWORD: "Safaspassword"
+SAMBA_NAME: "SafaSamba"

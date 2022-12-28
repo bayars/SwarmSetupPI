@@ -1,13 +1,10 @@
 ---
 - name: initialize docker with wifi interface
-  become_user: pi
   community.docker.docker_swarm:
     state: present
     advertise_addr: "{{swarm_network_interface}}"
-  when: ansible_hostname == "master"
 
 - name: create docker network
-  become_user: pi
   community.docker.docker_network:
     name: "{{ item }}"
     state: present
@@ -17,7 +14,37 @@
     - redmine
     - wireguard
     - traefik
-  when: ansible_hostname == "master"
+
+- name: replace the nextcloud db password to random
+  replace:
+    path: /home/{{ ansible_user }}/PersonalServer/nextcloud/db.env
+    regexp: 'POSTGRES_PASSWORD=.*'
+    replace: 'POSTGRES_PASSWORD={{ lookup("password", "/dev/null length=32 chars=ascii_letters,digits") }}'
+
+- name: replace redmine db username and password with randomized password
+  replace:
+    path: /home/{{ ansible_user }}/PersonalServer/redmine/docker-compose.yml
+    regexp: '{{ item }}=.*'
+    replace: '{{ item }}={{ lookup("password", "/dev/null length=32 chars=ascii_letters,digits") }}'
+  with_items: 
+    - POSTGRES_USER
+    - POSTGRES_PASSWORD
+
+- name: replace username and password for samba
+  replace:
+    path: /home/{{ ansible_user }}/PersonalServer/samba/docker-compose.yml
+    regexp: "USER"
+    replace: "{{ SAMBA_USER }}"
+  with_items: 
+    - { regex:"USER", replace: "{{ SAMBA_USER }}" }
+    - { regex:"PASSWORD", replace: "{{ SAMBA_PASSWORD }}" }
+    - { regex:"SAMBA_NAME", replace: "{{ SAMBA_NAME }}" }
+
+- name: create wireguard directory for config
+  file:
+    path: "{{ ansible_user }}/wireguard/appdata"
+    state: directory
+    mode: 0755
 
 - name: run composes
   shell: |
@@ -27,19 +54,6 @@
     - plex
     - redmine
     - wireguard
-  when: ansible_hostname == "master"
-
-
-# - name: build docker compose file
-#   become_user: pi
-#   community.docker.docker_compose:
-#     project_src: "/home/{{ ansible_user }}/PersonalServer/{{ item }}"
-#     build: yes
-#     state: present
-#     files:
-#       - docker-compose.yml
-#   vars:
-#     ansible_python_interpreter: /usr/bin/python3
 
 
 

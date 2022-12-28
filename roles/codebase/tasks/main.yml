@@ -16,10 +16,11 @@
     mode: 0644
 
 - name: get deployment file from github account
+  become_user: pi
   block:
   - name: clone repo
     git:
-      repo: git@github.com:rection/PersonalServer.git
+      repo: git@github.com:rection/PersonalCompose.git
       dest: /home/{{ ansible_user }}/PersonalServer
       version: main
       force: yes
@@ -29,4 +30,4 @@
 
   - name: run docker-compose
     include_tasks: build.yml
-  when: ansible_hostname == "master"
+  when: inventory_hostname in groups['master']
